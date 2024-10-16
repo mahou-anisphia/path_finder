@@ -1,4 +1,4 @@
-# Simple Project
+# Path Finder
 
 This is a simple Python project that implements various path finding algorithms.
 
@@ -20,7 +20,7 @@ Follow these steps to set up the project on your local machine:
 
    ```
    git clone https://github.com/mahou-anisphia/path_finder.git
-   cd simple-project
+   cd path_finder
    ```
 
 2. Set up a virtual environment:
