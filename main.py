@@ -1,14 +1,16 @@
-import tkinter as tk
+import customtkinter as ctk
 import logging
+import os
 from src.utils.logging import setup_logging
 from src.robot_navigation_app import RobotNavigationApp
 
 if __name__ == "__main__":
-    log_filename = setup_logging()
+    log_path = setup_logging()
     logger = logging.getLogger(__name__)
-    logger.info("Application started")
+    logger.info(f"Application started. Log file: {log_path}")
 
-    root = tk.Tk()
+    root = ctk.CTk()
+    root.geometry("800x600")
     app = RobotNavigationApp(root)
 
     logger.info("GUI initialized")

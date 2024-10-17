@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 import logging
 
 
@@ -6,10 +6,9 @@ class GridVisualizer:
     def __init__(self, master):
         self.logger = logging.getLogger(__name__)
         self.master = master
-        self.master.title("Robot Navigation")
         self.cell_size = 50
-        self.canvas = tk.Canvas(self.master)
-        self.canvas.pack(fill=tk.BOTH, expand=True)
+        self.canvas = ctk.CTkCanvas(self.master)
+        self.canvas.pack(fill="both", expand=True)
         self.logger.info("GridVisualizer initialized")
 
     def initialize_grid(self, environment):

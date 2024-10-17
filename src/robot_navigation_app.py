@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import logging
 from src.data.file_reader import read_input_file
@@ -12,11 +12,20 @@ class RobotNavigationApp:
         self.master.title("Robot Navigation")
         self.logger = logging.getLogger(__name__)
 
-        self.visualizer = GridVisualizer(self.master)
+        # Set the theme
+        # Modes: "System" (standard), "Dark", "Light"
+        ctk.set_appearance_mode("System")
+        # Themes: "blue" (standard), "green", "dark-blue"
+        ctk.set_default_color_theme("blue")
 
-        self.load_button = tk.Button(
-            self.master, text="Load Environment", command=self.load_environment)
-        self.load_button.pack()
+        self.frame = ctk.CTkFrame(master)
+        self.frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        self.visualizer = GridVisualizer(self.frame)
+
+        self.load_button = ctk.CTkButton(
+            self.frame, text="Load Environment", command=self.load_environment)
+        self.load_button.pack(pady=10)
 
         self.logger.info("RobotNavigationApp initialized")
 
