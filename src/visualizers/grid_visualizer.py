@@ -16,6 +16,7 @@ class GridVisualizer:
         Initializes and draws the grid based on the parsed environment.
         """
         try:
+            self.clear_grid()  # Clear existing grid before initializing new one
             rows, cols = environment['dimensions']
             self.canvas.config(width=cols*self.cell_size,
                                height=rows*self.cell_size)
@@ -56,4 +57,16 @@ class GridVisualizer:
         except Exception as e:
             self.logger.error(
                 f"Unexpected error occurred while initializing grid: {str(e)}")
+            raise
+
+    def clear_grid(self):
+        """
+        Clears the current grid.
+        """
+        try:
+            self.canvas.delete("all")
+            self.logger.info("Grid cleared successfully")
+        except Exception as e:
+            self.logger.error(
+                f"Unexpected error occurred while clearing grid: {str(e)}")
             raise
