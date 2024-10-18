@@ -9,6 +9,7 @@ class GridVisualizer:
         self.cell_size = 50
         self.canvas = ctk.CTkCanvas(self.master)
         self.canvas.pack(fill="both", expand=True)
+        self.move_layer = {}  # Dictionary to store move rectangles
         self.logger.info("GridVisualizer initialized")
 
     def initialize_grid(self, environment):
@@ -65,8 +66,35 @@ class GridVisualizer:
         """
         try:
             self.canvas.delete("all")
+            self.move_layer = {}
             self.logger.info("Grid cleared successfully")
         except Exception as e:
             self.logger.error(
                 f"Unexpected error occurred while clearing grid: {str(e)}")
+            raise
+
+    def update_moves(self, move_map):
+        """
+        Updates the grid to show all cells the robot has moved on.
+        """
+        try:
+            # Remove old move markers
+            for rect_id in self.move_layer.values():
+                self.canvas.delete(rect_id)
+            self.move_layer.clear()
+
+            # Add new move markers
+            for (x, y), value in move_map.items():
+                if value > 0:  # If the robot has moved on this cell
+                    x1, y1 = x * self.cell_size, y * self.cell_size
+                    x2, y2 = x1 + self.cell_size, y1 + self.cell_size
+                    rect_id = self.canvas.create_rectangle(
+                        x1, y1, x2, y2, fill="light blue", stipple="gray50")
+                    self.move_layer[(x, y)] = rect_id
+
+            self.logger.info(
+                f"Move layer updated with {len(self.move_layer)} cells")
+        except Exception as e:
+            self.logger.error(
+                f"Unexpected error occurred while updating moves: {str(e)}")
             raise
