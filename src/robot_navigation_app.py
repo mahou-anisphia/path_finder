@@ -5,6 +5,11 @@ from src.data.file_reader import read_input_file
 from src.data.environment_parser import parse_environment
 from src.visualizers.grid_visualizer import GridVisualizer
 from src.algorithms.bfs import BFS
+from src.algorithms.dfs import DFS
+from src.algorithms.gbfs import GBFS
+from src.algorithms.astar import AStar
+from src.algorithms.iddfs import IDDFS
+from src.algorithms.jps import JPS
 
 
 class RobotNavigationApp:
@@ -42,13 +47,33 @@ class RobotNavigationApp:
             self.sidebar, text="Clear Grid", command=self.clear_grid)
         self.clear_button.pack(pady=10, padx=20, fill="x")
 
-        # Add BFS button
+        # Add buttons for each algorithm
         self.bfs_button = ctk.CTkButton(
-            self.sidebar, text="Run BFS", command=self.run_bfs)
+            self.sidebar, text="Run BFS", command=lambda: self.run_algorithm(BFS))
         self.bfs_button.pack(pady=10, padx=20, fill="x")
 
+        self.dfs_button = ctk.CTkButton(
+            self.sidebar, text="Run DFS", command=lambda: self.run_algorithm(DFS))
+        self.dfs_button.pack(pady=10, padx=20, fill="x")
+
+        self.gbfs_button = ctk.CTkButton(
+            self.sidebar, text="Run GBFS", command=lambda: self.run_algorithm(GBFS))
+        self.gbfs_button.pack(pady=10, padx=20, fill="x")
+
+        self.astar_button = ctk.CTkButton(
+            self.sidebar, text="Run A*", command=lambda: self.run_algorithm(AStar))
+        self.astar_button.pack(pady=10, padx=20, fill="x")
+
+        self.iddfs_button = ctk.CTkButton(
+            self.sidebar, text="Run IDDFS", command=lambda: self.run_algorithm(IDDFS))
+        self.iddfs_button.pack(pady=10, padx=20, fill="x")
+
+        self.jps_button = ctk.CTkButton(
+            self.sidebar, text="Run JPS", command=lambda: self.run_algorithm(JPS))
+        self.jps_button.pack(pady=10, padx=20, fill="x")
+
         self.environment = None
-        self.bfs = None
+        self.current_algorithm = None
 
         self.logger.info("RobotNavigationApp initialized")
 
@@ -60,7 +85,6 @@ class RobotNavigationApp:
                 raw_data = read_input_file(filename)
                 self.environment = parse_environment(raw_data)
                 self.visualizer.initialize_grid(self.environment)
-                self.bfs = BFS(self.environment)
                 self.logger.info(
                     f"Environment loaded and visualized: {filename}")
         except Exception as e:
@@ -72,30 +96,36 @@ class RobotNavigationApp:
         try:
             self.visualizer.clear_grid()
             self.environment = None
-            self.bfs = None
+            self.current_algorithm = None
             self.logger.info("Grid cleared")
         except Exception as e:
             self.logger.error(f"Error clearing grid: {str(e)}")
             messagebox.showerror(
                 "Error", f"Failed to clear grid: {str(e)}")
 
-    def run_bfs(self):
-        if not self.environment or not self.bfs:
+    def run_algorithm(self, algorithm_class):
+        if not self.environment:
             messagebox.showerror("Error", "Please load an environment first.")
             return
 
         try:
-            path = self.bfs.run(self.update_visualizer)
+            self.current_algorithm = algorithm_class(self.environment)
+            path = self.current_algorithm.run(self.update_visualizer)
             if path:
-                self.logger.info(f"BFS completed. Path found: {path}")
-                messagebox.showinfo("BFS Complete", "Path to goal found!")
+                self.logger.info(
+                    f"{algorithm_class.__name__} completed. Path found: {path}")
+                messagebox.showinfo(
+                    f"{algorithm_class.__name__} Complete", "Path to goal found!")
             else:
-                self.logger.warning("BFS completed. No path to goal found.")
+                self.logger.warning(
+                    f"{algorithm_class.__name__} completed. No path to goal found.")
                 messagebox.showwarning(
-                    "BFS Complete", "No path to goal found.")
+                    f"{algorithm_class.__name__} Complete", "No path to goal found.")
         except Exception as e:
-            self.logger.error(f"Error running BFS: {str(e)}")
-            messagebox.showerror("Error", f"Failed to run BFS: {str(e)}")
+            self.logger.error(
+                f"Error running {algorithm_class.__name__}: {str(e)}")
+            messagebox.showerror(
+                "Error", f"Failed to run {algorithm_class.__name__}: {str(e)}")
 
     def update_visualizer(self, moves):
         self.visualizer.update_moves({move: 1 for move in moves})
