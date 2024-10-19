@@ -2,7 +2,7 @@ import heapq
 import time
 import logging
 from typing import List, Tuple, Dict, Set
-from src.utils.pathfinding_utils import is_valid_move, manhattan_distance, reconstruct_path
+from src.utils.pathfinding_utils import is_valid_move, manhattan_distance, reconstruct_path, parse_walls
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +12,7 @@ class JPS:
         self.rows, self.cols = environment['dimensions']
         self.start = environment['start']
         self.goals = set(environment['goals'])
-        self.walls = set((x, y) for x, y, w, h in environment['walls'] for dx in range(
-            w) for dy in range(h))
+        self.walls = parse_walls(environment['walls'])
         self.moves = []
 
     def jump(self, x: int, y: int, dx: int, dy: int) -> Tuple[int, int] | None:

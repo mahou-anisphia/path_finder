@@ -1,8 +1,8 @@
 import queue
 import time
 import logging
-from typing import List, Tuple, Dict, Set
-from src.utils.pathfinding_utils import parse_walls, is_valid_move, get_neighbors, reconstruct_path
+from typing import List, Tuple, Dict
+from src.utils.pathfinding_utils import get_neighbors, reconstruct_path, parse_walls
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ class BFS:
         self.rows, self.cols = environment['dimensions']
         self.start = environment['start']
         self.goals = set(environment['goals'])
-        self.walls = parse_walls(environment['walls'], self.rows, self.cols)
+        self.walls = parse_walls(environment['walls'])
         self.moves = []
 
     def run(self, callback) -> List[Tuple[int, int]]:

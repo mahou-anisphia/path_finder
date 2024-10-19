@@ -2,7 +2,7 @@ import heapq
 import time
 import logging
 from typing import List, Tuple, Dict, Set
-from src.utils.pathfinding_utils import get_neighbors, reconstruct_path, manhattan_distance
+from src.utils.pathfinding_utils import get_neighbors, reconstruct_path, manhattan_distance, parse_walls
 
 logger = logging.getLogger(__name__)
 
@@ -12,8 +12,7 @@ class GBFS:
         self.rows, self.cols = environment['dimensions']
         self.start = environment['start']
         self.goals = set(environment['goals'])
-        self.walls = set((x, y) for x, y, w, h in environment['walls'] for dx in range(
-            w) for dy in range(h))
+        self.walls = parse_walls(environment['walls'])
         self.moves = []
 
     def run(self, callback) -> List[Tuple[int, int]]:
