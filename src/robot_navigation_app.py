@@ -9,7 +9,7 @@ from src.algorithms.dfs import DFS
 from src.algorithms.gbfs import GBFS
 from src.algorithms.astar import AStar
 from src.algorithms.iddfs import IDDFS
-from src.algorithms.jps import JPS
+from src.algorithms.best_first_search import BestFirstSearch
 
 
 class RobotNavigationApp:
@@ -68,9 +68,9 @@ class RobotNavigationApp:
             self.sidebar, text="Run IDDFS", command=lambda: self.run_algorithm(IDDFS))
         self.iddfs_button.pack(pady=10, padx=20, fill="x")
 
-        self.jps_button = ctk.CTkButton(
-            self.sidebar, text="Run JPS", command=lambda: self.run_algorithm(JPS))
-        self.jps_button.pack(pady=10, padx=20, fill="x")
+        self.best_first_button = ctk.CTkButton(
+            self.sidebar, text="Run Best-First Search", command=lambda: self.run_algorithm(BestFirstSearch))
+        self.best_first_button.pack(pady=10, padx=20, fill="x")
 
         self.environment = None
         self.current_algorithm = None
