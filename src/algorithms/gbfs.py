@@ -27,7 +27,7 @@ class GBFS:
 
             # Update UI and wait
             callback(self.moves)
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             if current in self.goals:
                 logger.info(f"Goal reached at {current}")

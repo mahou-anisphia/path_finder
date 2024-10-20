@@ -17,7 +17,7 @@ class IDDFS:
     def dfs(self, node, depth, parent, callback):
         self.moves.append(node)
         callback(self.moves)
-        time.sleep(0.5)
+        time.sleep(0.1)
 
         if node in self.goals:
             return node

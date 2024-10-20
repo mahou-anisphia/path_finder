@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import logging
+import random
 from src.data.file_reader import read_input_file
 from src.data.environment_parser import parse_environment
 from src.visualizers.grid_visualizer import GridVisualizer
@@ -10,6 +11,7 @@ from src.algorithms.gbfs import GBFS
 from src.algorithms.astar import AStar
 from src.algorithms.iddfs import IDDFS
 from src.algorithms.best_first_search import BestFirstSearch
+from src.algorithms.bidirectional_astar import BidirectionalAStar
 
 
 class RobotNavigationApp:
@@ -47,6 +49,10 @@ class RobotNavigationApp:
             self.sidebar, text="Clear Grid", command=self.clear_grid)
         self.clear_button.pack(pady=10, padx=20, fill="x")
 
+        self.random_grid_button = ctk.CTkButton(
+            self.sidebar, text="Generate Random Grid", command=self.generate_random_grid)
+        self.random_grid_button.pack(pady=10, padx=20, fill="x")
+
         # Add buttons for each algorithm
         self.bfs_button = ctk.CTkButton(
             self.sidebar, text="Run BFS", command=lambda: self.run_algorithm(BFS))
@@ -71,6 +77,10 @@ class RobotNavigationApp:
         self.best_first_button = ctk.CTkButton(
             self.sidebar, text="Run Best-First Search", command=lambda: self.run_algorithm(BestFirstSearch))
         self.best_first_button.pack(pady=10, padx=20, fill="x")
+
+        # self.bidirectional_astar_button = ctk.CTkButton(
+        #     self.sidebar, text="Run Bidirectional A*", command=lambda: self.run_algorithm(BidirectionalAStar))
+        # self.bidirectional_astar_button.pack(pady=10, padx=20, fill="x")
 
         self.environment = None
         self.current_algorithm = None
@@ -102,6 +112,40 @@ class RobotNavigationApp:
             self.logger.error(f"Error clearing grid: {str(e)}")
             messagebox.showerror(
                 "Error", f"Failed to clear grid: {str(e)}")
+
+    def generate_random_grid(self):
+        while True:
+            rows, cols = random.randint(5, 15), random.randint(5, 15)
+            start = (random.randint(0, cols-1), random.randint(0, rows-1))
+            goals = [(random.randint(0, cols-1), random.randint(0, rows-1))
+                     for _ in range(random.randint(1, 3))]
+
+            num_walls = random.randint(3, 10)
+            walls = []
+            for _ in range(num_walls):
+                x, y = random.randint(0, cols-1), random.randint(0, rows-1)
+                width, height = random.randint(1, 3), random.randint(1, 3)
+                walls.append((x, y, width, height))
+
+            self.environment = {
+                'dimensions': (rows, cols),
+                'start': start,
+                'goals': goals,
+                'walls': walls
+            }
+
+            # Check if the grid has a solution
+            bidirectional_astar = BidirectionalAStar(self.environment)
+            path = bidirectional_astar.run()
+
+            if path:
+                self.visualizer.initialize_grid(self.environment)
+                self.logger.info("Random grid generated with a valid solution")
+                messagebox.showinfo(
+                    "Random Grid", "A new random grid with a valid solution has been generated.")
+                break
+            else:
+                self.logger.info("Generated grid has no solution, retrying...")
 
     def run_algorithm(self, algorithm_class):
         if not self.environment:
